@@ -1,1 +1,8 @@
 theme: jekyll-theme-slate
+title: COVID-19 Italia
+description: Previsione della trasmissione e della diffusione dai dati in tempo reale
+github:
+  is_project_page: false
+header:
+  image: https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg
+  og_image: https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg
