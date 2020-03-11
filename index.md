@@ -12,7 +12,7 @@ image: https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg
 
 <br>
 <div style="width=600px">
-<iframe width="100%" height="1200" scrolling="no" src="https://datastudio.google.com/embed/u/0/reporting/4935f32f-0b7f-4330-ac51-cdaeef5aa248/page/zczHB" frameborder="0" style="border:0"></iframe></div>
+<iframe width="100%" height="1300" scrolling="no" src="https://datastudio.google.com/embed/u/0/reporting/4935f32f-0b7f-4330-ac51-cdaeef5aa248/page/zczHB" frameborder="0" style="border:0"></iframe></div>
 
 <br>
 **Disclaimer** *Ci troviamo di fronte ad un problema complesso al quale abbiamo provato a dare una nostra interpretazione partendo da dati ufficiali e modelli ampiamente utilizzati in letteratura scientifica.  Nonostante questo c’è la possibilità di aver commesso errori. Crediamo nella forza della condivisione e ti invitiamo a segnalarci eventuali errori o miglioramenti.*<br>
