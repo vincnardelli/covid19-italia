@@ -18,7 +18,7 @@ image: https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg
 **Disclaimer** *Ci troviamo di fronte ad un problema complesso al quale abbiamo provato a dare una nostra interpretazione partendo da dati ufficiali e modelli ampiamente utilizzati in letteratura scientifica.  Nonostante questo c’è la possibilità di aver commesso errori. Crediamo nella forza della condivisione e ti invitiamo a segnalarci eventuali errori o miglioramenti.*<br>
 
 <br>
-Realizzato da [Vincenzo Nardelli](https://www.linkedin.com/in/vincenzonardelli/) e [Luigi Giuseppe Atzeni](https://www.linkedin.com/in/luigigiuseppeatzeni/).
+Realizzato da [Vincenzo Nardelli](https://www.linkedin.com/in/vincenzonardelli/), [Luigi Giuseppe Atzeni](https://www.linkedin.com/in/luigigiuseppeatzeni/) e [Andrea Palladino](https://www.linkedin.com/in/andrea-palladino-22476a110/)
 
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
