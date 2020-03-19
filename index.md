@@ -3,6 +3,7 @@ title:  "Monitoraggio COVID-19 in Italia"
 image: https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg
 ---
 <head>
+<meta http-equiv="refresh" content="0; url=https://covstat.it" />
 <meta property="og:image" content="https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg">
 <link rel="image_src" href="https://github.com/vincnardelli/covid19-italia/raw/master/covid.jpg">
 </head>
