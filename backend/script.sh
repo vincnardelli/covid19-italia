@@ -7,8 +7,7 @@ cp -R output/*.csv ../R/fit_modelli/
 #macroregioni
 cd ../macroregioni
 rm output/*
-python3 R0_regions_export.py
-python3 SIR2_regions_export.py
+python3 macroregioni.py
 cp -R output/*.csv ../R/fit_modelli/
 
 # regioni
