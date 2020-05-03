@@ -22,5 +22,4 @@ cp -R output/*.geojson ../R/fit_modelli/
 cd ../R
 rm export/*
 Rscript main.R
-aws s3 cp export/*.csv s3://vincnardelli.rdataexport/covstat/
-aws s3 cp export/*.geojson s3://vincnardelli.rdataexport/covstat/
+aws s3 cp export/ s3://vincnardelli.rdataexport/covstat/ --recursive
