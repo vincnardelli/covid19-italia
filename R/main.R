@@ -1,4 +1,5 @@
 # main script
+source("R/libraries.R")
 source("R/config.R")
 
 clean()
