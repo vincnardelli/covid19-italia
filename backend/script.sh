@@ -14,8 +14,7 @@ cp -R output/*.csv ../R/fit_modelli/
 cd ../regioni
 rm output/*
 python3 R0_map.py
-cp -R output/*.csv ../R/fit_modelli/
-cp -R output/*.geojson ../R/fit_modelli/
+aws s3 cp export/ s3://covstatit/ --recursive
 
 # R
 cd ../R
