@@ -1,17 +1,21 @@
 #internazionale
+library(readr)
+library(dplyr)
+library(geojsonio)
+library(openxlsx)
+library(lubridate)
+library(tidyr)
 
-# input =  R0 all in one
-
-data <- read_csv("fit_modelli/r0_countries.csv")
+# input =  R0_countries.csv
 
 # Grafico a discesa (aggiungere area per filtro) 
 data <- read_csv("fit_modelli/r0_countries.csv")
 data   %>% rename("Data" = X1) %>% filter(Data > "2020-03-10") %>% write.xlsx(paste0("export/10_R0_europe_curve_",format(Sys.Date(), "%d%m"),".xlsx"))
 
 # grafico a discesa animato
-data <- data  %>% rename("Data" = X1) %>%  filter(Data > "2020-03-10") 
-gather(data, key = Nazione, value = r0 , -Data) %>% 
-  pivot_wider(names_from = Data, values_from = r0) %>% write.xlsx(paste0("export/10_R0_europe_animated_",format(Sys.Date(), "%d%m"),".xlsx"))
+#data <- data  %>% rename("Data" = X1) %>%  filter(Data > "2020-03-10") 
+#gather(data, key = Nazione, value = r0 , -Data) %>% 
+#  pivot_wider(names_from = Data, values_from = r0) %>% write.xlsx(paste0("export/10_R0_europe_animated_",format(Sys.Date(), "%d%m"),".xlsx"))
 
 
 # istogramma R0
@@ -32,43 +36,43 @@ data$NAME[data$NAME == "Czechia"] <- "Czech Republic"
 #map <- geojson_read("data/custom.geo.json",  what = "sp")
 map <- geojson_read("https://raw.githubusercontent.com/leakyMirror/map-of-europe/master/GeoJSON/europe.geojson", what = "sp")
 
-
 levels(map@data$NAME)[48] <- "Macedonia"
 levels(map@data$NAME)[38] <- "Moldova"
 
 map@data <- map@data %>% 
   left_join(data) #%>% filter(NAME != "Israel") 
 names(map@data)[13] <- "R0"
+#map@data %>% View()
+
 
 # ultimo aggiornamento 
-
-last <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/04-23-2020.csv")
-last <- aggregate(last[,8:11], by= list(as.factor(last$Country_Region)), FUN = "sum")
-last <- last %>% rename("NAME" = Group.1,"Totale casi" = Confirmed,"Guariti" = Recovered,"Deceduti" = Deaths, "Attualmente positivi" = Active) %>%
-  mutate("Letalità" = round(Deceduti/`Totale casi`,2),
-         "Guariti/Deceduti" = round(Guariti/Deceduti,2))
-levels(last$NAME)[46] <- "Czech Republic"
-levels(last$NAME)[126] <- "Macedonia"
-#write.xlsx(last,"export/10_dati_odierni.xlsx")
-map@data <- map@data %>% left_join(last) 
-#data %>% left_join(last) %>% View()
-geojson_write(map, file = paste0("export/10_mappa_R0_europa_",format(Sys.Date(), "%d%m"),".geojson"))
-
+#
+#last <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/04-23-2020.csv")
+#last <- aggregate(last[,8:11], by= list(as.factor(last$Country_Region)), FUN = "sum")
+#last <- last %>% rename("NAME" = Group.1,"Totale casi" = Confirmed,"Guariti" = Recovered,"Deceduti" = Deaths, "Attualmente positivi" = Active) %>%
+#  mutate("Letalità" = round(Deceduti/`Totale casi`,2),
+#         "Guariti/Deceduti" = round(Guariti/Deceduti,2))
+#levels(last$NAME)[46] <- "Czech Republic"
+#levels(last$NAME)[126] <- "Macedonia"
+##write.xlsx(last,"export/10_dati_odierni.xlsx")
+#map@data <- map@data %>% left_join(last) 
+##data %>% left_join(last) %>% View()
+#geojson_write(map, file = paste0("export/10_mappa_R0_europa_",format(Sys.Date(), "%d%m"),".geojson"))
 
 
 
 #italia
 
 #R0
-nation <- read_csv("fit_modelli/r0.csv") 
-# numeri
-italia <- read_csv("https://github.com/pcm-dpc/COVID-19/raw/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv")
-italia <- italia %>% select(data,totale_casi, totale_positivi, dimessi_guariti,deceduti)
-italia <- italia %>% filter(data == max(data)) %>%  rename("Data" = data, "Totale casi" = totale_casi, "Attualmente positivi" = totale_positivi, "Guariti" = dimessi_guariti, "Deceduti" = deceduti) %>% mutate("Letalità" = round(Deceduti/`Totale casi`,2),
-           "Guariti/Deceduti" = round(Guariti/Deceduti,2))
-nation <- nation %>% filter(Data == max(Data))
-italia <- cbind(R0 = nation$R0,  italia[,-1])
-  
+#nation <- read_csv("fit_modelli/r0.csv") 
+## numeri
+#italia <- read_csv("https://github.com/pcm-dpc/COVID-19/raw/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv")
+#italia <- italia %>% select(data,totale_casi, totale_positivi, dimessi_guariti,deceduti)
+#italia <- italia %>% filter(data == max(data)) %>%  rename("Data" = data, "Totale casi" = totale_casi, "Attualmente positivi" = totale_positivi, "Guariti" = dimessi_guariti, "Deceduti" = deceduti) %>% mutate("Letalità" = round(Deceduti/`Totale casi`,2),
+#           "Guariti/Deceduti" = round(Guariti/Deceduti,2))
+#nation <- nation %>% filter(Data == max(Data))
+#italia <- cbind(R0 = nation$R0,  italia[,-1])
+
 #italia <- cbind(data.frame(Data = as_date(italia[-1,]$data),"Totale casi" = italia[-1,]$totale_casi, "Incremento positivi" = italia[-1,]$variazione_totale_positivi ), data.frame(diff(as.matrix(italia[,-c(1,2)]), lag = 1, differences = 1))) 
 #italia <- italia %>% rename("Incremento positivi" = Attualmente.positivi, "Guariti" = dimessi_guariti, "Deceduti" = deceduti)
 
@@ -93,10 +97,10 @@ gather(Totale, key = Data, value = Totale, -Group.1) %>%
 #incremento <- gather(Totale, key = Data, value = Totale, -Group.1) %>% 
 #  pivot_wider(names_from = Group.1, values_from = Totale)
 #incremento <-  cbind(data.frame(Data = mdy(incremento[-1,]$Data)), data.frame(diff(as.matrix(incremento[,-1]), lag = 1, differences = 1))) 
-#
-#
+
+
 #write.xlsx(incremento,"export/10_variazione_giornaliera_europe.xlsx")
-#
+
 ## Variazione giornaliera infetti (hist)
 #incremento <- incremento %>% filter(as_date(Data) == max(as_date(Data))) 
 #gather(incremento, key = Paese, value = "Attualmente positivi", -Data) %>% write.xlsx("export/10_variazione_giornaliera_europe_hist.xlsx")
@@ -124,7 +128,7 @@ gather(Deceduti, key = Data, value = Deceduti, -Group.1) %>%
   write.xlsx(paste0("export/10_deceduti_europe_",format(Sys.Date(), "%d%m"),".xlsx"))
 
 
-# Variazione giornaliera infetti
+# indicatori principali
 T <- gather(Totale, key = Data, value = Totale, -Group.1)
 G <- gather(Guariti, key = Data, value = Guariti, -Group.1)
 D <- gather(Deceduti, key = Data, value = Deceduti, -Group.1)
@@ -132,8 +136,14 @@ D <- gather(Deceduti, key = Data, value = Deceduti, -Group.1)
 all <- cbind(T, Guariti = G$Guariti,Deceduti = D$Deceduti) 
 all$Data <- mdy(all$Data)
 all <- all %>% filter(Data > "2020-02-22") %>%  mutate("Attualmente positivi" = Totale - Guariti - Deceduti,
-               "Letalità" = round(Deceduti/Totale,2),
-               "Guariti/Deceduti" = round(Guariti/Deceduti,2)) 
+                                                       "Letalità" = round(Deceduti/Totale,2),
+                                                       "Guariti/Deceduti" = round(Guariti/Deceduti,2)) 
+indexes <- all
+indexes <- indexes %>% filter(Data == max(Data)) %>% rename("Totale casi" = Totale, "NAME" = Group.1)
+map@data <- map@data %>% left_join(indexes[,-2]) 
+geojson_write(map, file = paste0("export/10_mappa_R0_europa_",format(Sys.Date(), "%d%m"),".geojson"))
+
+# Variazione giornaliera infetti
 all <- all %>% select(Group.1,Data,`Attualmente positivi`) %>%  pivot_wider(names_from = Group.1, values_from = `Attualmente positivi`)
 write.xlsx(all,paste0("export/10_attualmente_positivi_europe_",format(Sys.Date(), "%d%m"),".xlsx"))
 
@@ -147,24 +157,3 @@ gather(all, key = Paese, value = "Attualmente positivi", -Data) %>% write.xlsx(p
 
 
 
-
-# input = R0 scomposto
-#
-#nations <- list("Italy", "France","Germany", "Spain","UK","USA", "Sweden")
-#
-#data <- data.frame(Data = seq(as_date("2020-01-26"),as_date("2020-04-16"),by = "days"))
-#for (i in (1:length(nations))) {
-#  nation <- read_csv(paste0("internazionale/R0_",nations[[i]],".csv")) %>% select(R0)
-#  names(nation)[1] <- nations[[i]]
-#  data <- cbind(data,nation)
-#}
-#
-#data %>% filter(Data > "2020-03-02") %>% gather(Italy, France,Germany, Spain,UK,USA, key = Area, value = r0 ) %>% 
-#  pivot_wider(names_from = Data, values_from = r0) %>% 
-#  write.xlsx("export/10_R0_internazionale.xlsx")
-#
-#Europe <- data.frame("Paese"= c("Armenia","Azerbaijan","San Marino","Albania","Andorra","Austria","Belgium","Bulgaria","Bosnia and Herzegovina","Belarus",
-#                                "Switzerland","Northern Cyprus","Cyprus","Czechia","Germany","Denmark","Spain","Estonia","Finland","France",
-#                                "United Kingdom","Georgia","Greece","Croatia","Hungary","Ireland","Iceland","Italy","Kosovo","Liechtenstein",
-#                                "Lithuania","Luxembourg","Latvia","Moldova","North Macedonia","Malta","Montenegro","Netherlands","Norway","Poland",
-#                              "Romania","Republic of Serbia","Slovakia","Slovenia","Sweden","Turkey","Ukraine","Portugal"))
