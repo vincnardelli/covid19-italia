@@ -35,9 +35,10 @@ data$NAME[data$NAME == "Czechia"] <- "Czech Republic"
 #mappa R0 europea
 #map <- geojson_read("data/custom.geo.json",  what = "sp")
 map <- geojson_read("https://raw.githubusercontent.com/leakyMirror/map-of-europe/master/GeoJSON/europe.geojson", what = "sp")
+map@data$NAME <- as.character(map@data$NAME)
 
-levels(map@data$NAME)[48] <- "Macedonia"
-levels(map@data$NAME)[38] <- "Moldova"
+map@data$NAME[map@data$NAME == "The former Yugoslav Republic of Macedonia"] <- "Macedonia"
+map@data$NAME[map@data$NAME == "Republic of Moldova"] <- "Moldova"
 
 map@data <- map@data %>% 
   left_join(data) #%>% filter(NAME != "Israel") 
