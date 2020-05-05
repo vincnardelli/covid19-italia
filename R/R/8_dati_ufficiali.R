@@ -14,15 +14,16 @@ nazione$data <- as_date(nazione$data)
 
 nazione %>% arrange(desc(data)) %>% rename("Data" = data,
                                            "Ricoverati con sintomi" = ricoverati_con_sintomi,
-                                                      "Terapia intensiva" = terapia_intensiva,
-                                                      "Isolamento domiciliare" = isolamento_domiciliare,
-                                                      "Attualmente positivi" = totale_positivi,
-                                                      "Variazione positivi" = variazione_totale_positivi,
-                                                      "Guariti" = dimessi_guariti,
-                                                      "Deceduti" = deceduti,
-                                                      "Tamponi" = tamponi
-                                                      ) %>% select(Data,`Attualmente positivi`,`Variazione positivi`,`Terapia intensiva`,
-                              `Ricoverati con sintomi`,`Isolamento domiciliare`,Guariti,Deceduti,Tamponi) %>% 
+                                           "Terapia intensiva" = terapia_intensiva,
+                                           "Isolamento domiciliare" = isolamento_domiciliare,
+                                           "Attualmente positivi" = totale_positivi,
+                                           "Variazione positivi" = variazione_totale_positivi,
+                                           "Nuovi positivi" = nuovi_positivi,
+                                           "Guariti" = dimessi_guariti,
+                                           "Deceduti" = deceduti,
+                                           "Tamponi" = tamponi
+) %>% select(Data,`Attualmente positivi`,`Variazione positivi`,`Nuovi positivi`,`Terapia intensiva`,
+             `Ricoverati con sintomi`,`Isolamento domiciliare`,Guariti,Deceduti,Tamponi) %>% 
   write.xlsx(paste0("export/8_nazionale_", format(Sys.Date(), "%d%m"),".xlsx"))
 
 #REGIONALI
@@ -35,17 +36,18 @@ regioni %>% arrange(desc(data)) %>% mutate(Area = case_when(denominazione_region
                                                             denominazione_regione %in% c("Abruzzo", "Campania","Lazio","Molise","Toscana","Umbria") ~ "Centro",
                                                             denominazione_regione %in% c("P.A. Bolzano", "Emilia-Romagna","Friuli Venezia Giulia","Liguria","Lombardia","Marche","Piemonte","P.A. Trento","Valle d'Aosta","Veneto") ~ "Nord")) %>% 
   rename("Data" = data,
-                                           "Regione" = denominazione_regione,
-                                           "Ricoverati con sintomi" = ricoverati_con_sintomi,
-                                           "Terapia intensiva" = terapia_intensiva,
-                                           "Isolamento domiciliare" = isolamento_domiciliare,
-                                           "Attualmente positivi" = totale_positivi,
-                                           "Variazione positivi" = variazione_totale_positivi,
-                                           "Guariti" = dimessi_guariti,
-                                           "Deceduti" = deceduti,
-                                           "Tamponi" = tamponi
-) %>% select(Data,Area,Regione, `Attualmente positivi`,`Variazione positivi`,`Terapia intensiva`,
-             `Ricoverati con sintomi`,`Isolamento domiciliare`,Guariti,Deceduti, Tamponi) %>% 
+         "Regione" = denominazione_regione,
+         "Ricoverati con sintomi" = ricoverati_con_sintomi,
+         "Terapia intensiva" = terapia_intensiva,
+         "Isolamento domiciliare" = isolamento_domiciliare,
+         "Attualmente positivi" = totale_positivi,
+         "Variazione positivi" = variazione_totale_positivi,
+         "Nuovi positivi" = nuovi_positivi,
+         "Guariti" = dimessi_guariti,
+         "Deceduti" = deceduti,
+         "Tamponi" = tamponi
+  ) %>% select(Data,Area,Regione, `Attualmente positivi`,`Variazione positivi`,`Nuovi positivi`,`Terapia intensiva`,
+               `Ricoverati con sintomi`,`Isolamento domiciliare`,Guariti,Deceduti, Tamponi) %>% 
   write.xlsx(paste0("export/8_regionale_", format(Sys.Date(), "%d%m"),".xlsx"))
 
 #PROVINCIALI
