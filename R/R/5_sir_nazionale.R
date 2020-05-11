@@ -46,7 +46,7 @@ incremento <- export %>% mutate(lag_sint = lag(Sintomatici),
                                 lag_att = lag(`Casi Attuali`),
                                 "Variazione prevista" = Sintomatici - lag_sint,
                                 "Variazione reale" = `Casi Attuali`- lag_att) %>% 
-  select(data,`Variazione prevista`,`Variazione reale`) %>% filter(data <= "2020-05-10")
+  select(data,`Variazione prevista`,`Variazione reale`) %>% filter(data <= "2020-05-15")
 
 
 write.csv(incremento, paste0("export/5_incremento_", format(Sys.Date(), "%d%m"),".csv"))
