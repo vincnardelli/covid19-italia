@@ -95,13 +95,16 @@ print('Fitting the model')
 # 3 parameter fit for the active infected
 
 def optimizer_adv(R0,tau,t_thresh):
-    fin_result_updated=SIR_2(6*10**7,R0*1/14,1/14,tau,t_thresh,I0=3*ydata_inf[0])
-    i_vec=fin_result_updated[2]/3
     
-    pesi=np.exp(-np.arange(len(ydata_inf))/7)     
+    asympt=3
+    
+    fin_result_updated=SIR_2(6*10**7,R0*1/21,1/21,tau,t_thresh,I0=asympt*ydata_inf[0])
+    i_vec=fin_result_updated[2]/asympt
+    
+    pesi=np.exp(-np.arange(len(ydata_inf))/7)    # 
     pesi=pesi[::-1]
     
-    accuracy=np.sum((ydata_inf-i_vec[0:len(ydata_inf)])**2/ydata_inf**2*pesi)   #mean squared error. This is used for the optimization
+    accuracy=np.sum((ydata_inf-i_vec[0:len(ydata_inf)])**2)   #mean squared error. This is used for the optimization
     
     errperc=np.mean(np.abs((ydata_inf-i_vec[0:len(ydata_inf)])/ydata_inf))*100
     stdperc=np.std(np.abs((ydata_inf-i_vec[0:len(ydata_inf)])/ydata_inf))*100
@@ -111,14 +114,14 @@ def optimizer_adv(R0,tau,t_thresh):
 
 
 # grid on 3 parameters
-R0grid=np.linspace(4.5,6,20)
-taugrid=np.linspace(29,33,20)
-ttreshgrid=np.arange(0,11,1)
+R0grid=np.linspace(7.5,8.5,50)
+taugrid=np.linspace(25,27,200)
+#ttreshgrid=np.linspace(0,10,15)
 
 res_scan=[]
 counter=0
 counter2=0
-cycle_tot=len(R0grid)*len(taugrid)*len(ttreshgrid)
+cycle_tot=len(R0grid)*len(taugrid) #*len(ttreshgrid)
 
 time1=pctime.time()
 
@@ -126,27 +129,28 @@ time1=pctime.time()
 
 for r in R0grid:
     for tau in taugrid:
-        for tt in ttreshgrid:
-            opt_res=optimizer_adv(r,tau,tt)
-            res_scan.append([r,tau,tt,opt_res[0],opt_res[1],opt_res[2]])
-            counter=counter+1
-            counter2=counter2+1
-            if counter2==cycle_tot/10:
-                time2=pctime.time()
-                remtime=round((time2-time1)/counter*(cycle_tot-counter),1)
-                print('completed ',round(counter/cycle_tot*100,1),'%. Remaining time ',remtime,'sec')
-                counter2=0
+        opt_res=optimizer_adv(r,tau,0)
+        res_scan.append([r,tau,0,opt_res[0],opt_res[1],opt_res[2]])
+        counter=counter+1
+        counter2=counter2+1
+        if counter2==cycle_tot/10:
+            time2=pctime.time()
+            remtime=round((time2-time1)/counter*(cycle_tot-counter),1)
+            print('completed ',round(counter/cycle_tot*100,1),'%. Remaining time ',remtime,'sec')
+            counter2=0
         
 res_scan=np.array(res_scan)
 
 
-
 df_res_scan=pd.DataFrame(res_scan)
 df_res_scan.columns=['R0','tau','t_thresh','MSE','mean err%','std err%']
+
+print(df_res_scan.sort_values(by='MSE').head())
+
 par_ideal=np.array(df_res_scan.sort_values(by='MSE').iloc[0,0:])
 
 
-fin_result_updated=SIR_2(6*10**7,par_ideal[0]*1/14,1/14,par_ideal[1],t_thresh=par_ideal[2],I0=3*ydata_inf[0])
+fin_result_updated=SIR_2(6*10**7,par_ideal[0]*1/21,1/21,par_ideal[1],t_thresh=par_ideal[2],I0=3*ydata_inf[0])
 
 t=fin_result_updated[0]
 s_vec=fin_result_updated[1]
@@ -154,12 +158,33 @@ i_vec=fin_result_updated[2]
 r_vec=fin_result_updated[3]
 
 
+plt.figure(figsize=(7,5))
+plt.plot(np.arange(len(ydata_inf)),ydata_inf,color='red',label='Active infected (data)')
+plt.plot(t, i_vec/3, label='Active infected (model, best-fit)',color='blue',linestyle='--')
+#plt.fill_between(t, i_vec*(1+par_ideal[5]/100*2.65)/3,i_vec*(1-par_ideal[5]/100*2.65)/3, label='Active infected (model, 99% of data)',color='blue',alpha=.2)
+plt.plot(np.zeros(2)+70,[-1000,250000],color='purple')
+plt.xticks(np.arange(0,100,7),['24 Feb','2 Mar','9 Mar','16 Mar','23 Mar','30 Mar','6 Apr','13 Apr','20 Apr','27 Apr','4 Mag','11 Mag','18 Mag','25 Mag','1 Giu'],rotation=30)
+plt.xlim(0,100)
+plt.ylim(100,2*10**5)
+#plt.yscale('log')
+plt.annotate("Lockdown", xy=(14,10000), xytext=(3,40000), arrowprops=dict(arrowstyle="->"),fontsize=13)
+plt.xlabel('Data')
+plt.ylabel('Counter')
+plt.yscale('log')
+plt.legend()
+plt.grid(color='gray', linestyle='--', linewidth=0.5)
+plt.tight_layout()
+plt.savefig('output/fit_con_incertezza.png',dpi=300)
+#plt.show()
+
+print('Figure model-data saved')
+
 #export
 
 t_date=pd.to_datetime(t,unit='D',origin=pd.Timestamp('2020-02-24'))
 
 export_v2 = pd.DataFrame({'date':t_date,'t':t,'s':s_vec,'i':i_vec,'r':r_vec})
-export_v2.to_csv('output/nazionale.csv',index=False)
+export_v2.to_csv('nazionale.csv',index=False)
 
 
 # # computation of national R0
@@ -217,6 +242,19 @@ for i in range(0,today-(time_window-1)):
 r0_time=np.array(r0_time)
 
 
+plt.figure(figsize=(5,5))
+plt.plot(r0_time)
+plt.xticks(np.arange(0-(time_window-5),80,7),['28 Feb','6 Mar','13 Mar','20 Mar','27 Mar','3 Apr','10 Apr','17 Apr','24 Apr','1 Mag','8 Mag','15 Mag'],rotation=20)
+plt.xlim(0,today-4)
+#plt.xlim(19,today-9)
+plt.ylabel('$R_0$')
+plt.ylim(0,5)
+plt.grid()
+plt.title('Evolution of $R_0$')
+plt.savefig('output/r0-evo.png',dpi=300)
+#plt.show()
+
+print('Figure R0 saved')
 
 # export R0 over time
 
@@ -224,7 +262,7 @@ df_r0=pd.DataFrame(pd.to_datetime(np.arange(len(r0_time)),unit='D',origin='2020-
 df_r0['R0']=r0_time
 df_r0.columns=['Data','R0']
 
-df_r0.to_csv('output/r0.csv',index=False)
+df_r0.to_csv('r0.csv',index=False)
 
 
 # # Future forecasting
@@ -237,9 +275,9 @@ def deriv_SIR_2_future(y, t, N, beta1,gamma,newR0,tau=10**6,t_thresh=14):
     
     if t<=t_thresh:      # il lockdown nazionale inizia al 14° giorno 
         B=beta1
-    elif t>t_thresh and t<=70: 
+    elif t>t_thresh and t<=len(ydata_inf): 
         B=beta1*np.exp(-(t-t_thresh)/tau)
-    elif t>70:
+    elif t>len(ydata_inf):
         B=newR0*gamma
         #B=beta1*np.exp(-(70-t_thresh)/tau)+0.05*gamma*(t-70)
         #print(B,t)
@@ -273,11 +311,40 @@ def SIR_2_future(N,beta1,gamma,newR0,tau=10**6,t_thresh=14,I0=1,R0=0,t=np.arange
 
 asympt=3
 
-i_vec_future050=SIR_2_future(6*10**7,par_ideal[0]*1/14,1/14,0.5,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
-i_vec_future100=SIR_2_future(6*10**7,par_ideal[0]*1/14,1/14,1.0,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
-i_vec_future110=SIR_2_future(6*10**7,par_ideal[0]*1/14,1/14,1.1,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
-i_vec_future120=SIR_2_future(6*10**7,par_ideal[0]*1/14,1/14,1.20,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
+i_vec_future050=SIR_2_future(6*10**7,par_ideal[0]*1/21,1/21,0.5,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
+i_vec_future100=SIR_2_future(6*10**7,par_ideal[0]*1/21,1/21,1.0,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
+i_vec_future110=SIR_2_future(6*10**7,par_ideal[0]*1/21,1/21,1.1,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
+i_vec_future120=SIR_2_future(6*10**7,par_ideal[0]*1/21,1/21,1.20,par_ideal[1],t_thresh=par_ideal[2],I0=asympt*ydata_inf[0])[2]
 
+
+plt.figure(figsize=(7,5))
+plt.plot(np.arange(len(ydata_inf)),ydata_inf,color='red',linestyle='None',marker='.',label='Infetti sintomatici attivi (dati)')
+plt.fill_between(t, i_vec_future100/asympt,i_vec_future050/asympt,color='green',label='Modello, $R_0$ fra 0.5 e 1',alpha=0.5)
+plt.fill_between(t, i_vec_future110/asympt,i_vec_future100/asympt,color='orange',label='Modello, $R_0$ fra 1 e 1.1',alpha=0.5)
+plt.fill_between(t, i_vec_future120/asympt,i_vec_future110/asympt,color='red',label='Modello, $R_0$ fra 1.1 e 1.2',alpha=0.5)
+#plt.plot(t, i_vec_future05/asympt, label='Modello, R$_0^{riapertura}$=0.5')
+#plt.plot(t, i_vec_future10/asympt, label='Modello, R$_0^{riapertura}$=1')
+#plt.plot(t, i_vec_future15/asympt, label='Modello, R$_0^{riapertura}$=1.1')
+#plt.plot(t, i_vec_future20/asympt, label='Modello, R$_0^{riapertura}$=1.2')
+#plt.fill_between(t, i_vec_future*(1+par_ideal[4]/100*2)/asympt,i_vec_future*(1-par_ideal[4]/100*2)/asympt, label='Infetti attivi (modello, 95% C.L.)',color='red',alpha=.2)
+plt.plot(np.zeros(2)+70,[-1000,10**7],color='purple')
+plt.xticks(np.arange(6,360,30),['1 Mar','1 Apr','1 Mag','1 Giu','1 Lug','1 Ago','1 Set','1 Ott','1 Nov','1 Dic','1 Gen','1 Feb'],rotation=30)
+plt.xlim(0,360)
+plt.ylim(100,ydata_inf.max()*4.3)
+#plt.ylim(100,10**7)
+#plt.yscale('log')
+plt.annotate("Lockdown", xy=(14,ydata_inf.max()*0.1), xytext=(3,ydata_inf.max()*2), arrowprops=dict(arrowstyle="->"),fontsize=13)
+plt.annotate("Riapertura", xy=(70,ydata_inf.max()), xytext=(80,ydata_inf.max()*2), arrowprops=dict(arrowstyle="->"),fontsize=13)
+plt.xlabel('Data')
+plt.ylabel('Counter')
+plt.legend()
+plt.grid(color='gray', linestyle='--', linewidth=0.5)
+plt.title('2 asintomatici per ogni sintomatico')
+plt.tight_layout()
+plt.savefig('output/predizioni_future.png',dpi=300)
+#plt.show()
+
+print('Figure prediction saved')
 
 #export
 
@@ -288,4 +355,4 @@ ydata_inf_toexport[len(ydata_inf):]=np.nan
 t_date=pd.to_datetime(t,unit='D',origin=pd.Timestamp('2020-02-24'))
 
 export_forecast = pd.DataFrame({'date':t_date,'t':t,'R0=0.5':i_vec_future050/asympt,'R0=1':i_vec_future100/asympt,'R0=1.1':i_vec_future110/asympt,'R0=1.2':i_vec_future120/asympt,'infetti_reali':ydata_inf_toexport})
-export_forecast.to_csv('output/predizioni_future_export.csv',index=False)
+export_forecast.to_csv('predizioni_future_export.csv',index=False)
