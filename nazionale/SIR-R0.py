@@ -184,7 +184,7 @@ print('Figure model-data saved')
 t_date=pd.to_datetime(t,unit='D',origin=pd.Timestamp('2020-02-24'))
 
 export_v2 = pd.DataFrame({'date':t_date,'t':t,'s':s_vec,'i':i_vec,'r':r_vec})
-export_v2.to_csv('nazionale.csv',index=False)
+export_v2.to_csv('output/nazionale.csv',index=False)
 
 
 # # computation of national R0
@@ -262,7 +262,7 @@ df_r0=pd.DataFrame(pd.to_datetime(np.arange(len(r0_time)),unit='D',origin='2020-
 df_r0['R0']=r0_time
 df_r0.columns=['Data','R0']
 
-df_r0.to_csv('r0.csv',index=False)
+df_r0.to_csv('output/r0.csv',index=False)
 
 
 # # Future forecasting
@@ -355,4 +355,4 @@ ydata_inf_toexport[len(ydata_inf):]=np.nan
 t_date=pd.to_datetime(t,unit='D',origin=pd.Timestamp('2020-02-24'))
 
 export_forecast = pd.DataFrame({'date':t_date,'t':t,'R0=0.5':i_vec_future050/asympt,'R0=1':i_vec_future100/asympt,'R0=1.1':i_vec_future110/asympt,'R0=1.2':i_vec_future120/asympt,'infetti_reali':ydata_inf_toexport})
-export_forecast.to_csv('predizioni_future_export.csv',index=False)
+export_forecast.to_csv('output/predizioni_future_export.csv',index=False)
