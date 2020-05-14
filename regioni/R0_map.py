@@ -71,7 +71,7 @@ for region in name_regions:
         xdata_2=np.arange(0,len(ydata_inf_2))
 
         #model
-        fin_result=time_evo(N,0.1*R0,0.1,I0=ydata_inf_2[0])
+        fin_result=time_evo(N,0.07*R0,0.07,I0=ydata_inf_2[0])
         i_vec=fin_result[2]
         i_vec_2=i_vec[0:len(xdata_2)]
 
