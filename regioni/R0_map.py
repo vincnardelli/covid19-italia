@@ -64,7 +64,7 @@ for region in name_regions:
     xdata       = pd.to_numeric(range(ydata.shape[0]))
     today       = len(xdata)
 
-    def minimizer(R0,t1=today-5,t2=today):
+    def minimizer(R0,t1=today-7,t2=today):
     
         #true data
         ydata_inf_2=np.array(ydata_inf[t1:t2])
@@ -87,7 +87,7 @@ for region in name_regions:
     r0_ideal = round(xgrid[np.argmin(ygrid)],2)
     print('r0_ideal for the '+region+': ',r0_ideal)
 
-    ydata_inf_2 = np.array(ydata_inf[today-5:today])
+    ydata_inf_2 = np.array(ydata_inf[today-7:today])
     xdata_2     = np.arange(0,len(ydata_inf_2))
     print('ydata_inf.shape '+region+': ',ydata_inf.shape)
     print('ydata_inf for the '+region+': ',ydata_inf)
