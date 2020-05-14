@@ -275,9 +275,9 @@ def deriv_SIR_2_future(y, t, N, beta1,gamma,newR0,tau=10**6,t_thresh=14):
     
     if t<=t_thresh:      # il lockdown nazionale inizia al 14° giorno 
         B=beta1
-    elif t>t_thresh and t<=len(ydata_inf): 
+    elif t>t_thresh and t<=70:
         B=beta1*np.exp(-(t-t_thresh)/tau)
-    elif t>len(ydata_inf):
+    elif t>70:
         B=newR0*gamma
         #B=beta1*np.exp(-(70-t_thresh)/tau)+0.05*gamma*(t-70)
         #print(B,t)
