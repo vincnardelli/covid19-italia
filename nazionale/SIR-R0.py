@@ -235,7 +235,7 @@ scangrid=np.linspace(0,5,100)
 for i in range(0,today-(time_window-1)):
     min_val=minimizer_gen(i,i+time_window,xgrid=scangrid)
     r0_time.append(min_val)
-    scangrid=np.linspace(min_val/2,min_val*2,100)  #the grid change over the time (this speed up the process)
+    scangrid=np.linspace(0,min_val*2,100)  #the grid change over the time (this speed up the process)
     print('Day n',i,' R0=',min_val)
     print(i,i+time_window,len(ydata_inf))
     
