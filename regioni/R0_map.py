@@ -103,7 +103,7 @@ for region in name_regions:
     
     def minimizer_gen(t1,t2):
 
-        xgrid=np.arange(0.1,7.2,0.01)
+        xgrid=np.arange(0.01,7.2,0.01)
         ygrid=minimizer_vec(xgrid,t1=t1,t2=t2)
         r0_ideal=round(xgrid[np.argmin(ygrid)],2)
 
@@ -142,6 +142,7 @@ map = map.merge(df, on='description', how='left')
 map.to_file("export/r0_regioni.geojson", driver='GeoJSON')
 classificazione = pd.read_excel('classificazione_regioni.xlsx')
 map = map.merge(classificazione, on='description', how='left')
+map.sort_values(by=['R0'], inplace=True, ascending=False)
 map[["description", "R0", "Area"]].to_csv("export/r0_regioni.csv")
 
 
