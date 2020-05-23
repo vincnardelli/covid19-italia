@@ -21,4 +21,4 @@ rm export/*
 cp ../regioni/export/* export/
 Rscript main.R
 zip -r export/export.zip export
-aws s3 cp export/ s3://covstatit/ --recursive
+aws s3 cp export/export.zip s3://covstatit/
