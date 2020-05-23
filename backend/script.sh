@@ -12,13 +12,13 @@ cp -R output/*.csv ../R/fit_modelli/
 
 # regioni
 cd ../regioni
-rm output/*
+rm export/*
 python3 R0_map.py
-aws s3 cp export/ s3://covstatit/ --recursive
 
 # R
 cd ../R
 rm export/*
+cp ../regioni/export/* export/
 Rscript main.R
 zip -r export/export.zip export
 aws s3 cp export/ s3://covstatit/ --recursive
