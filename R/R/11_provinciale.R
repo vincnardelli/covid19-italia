@@ -1,6 +1,14 @@
 # rischio provinciale
 # Si tratta di monitorare il numero di nuove infezioni negli ultimi 7 giorni:
 # se supera la soglia di 50 ogni 100mila abitanti, si frena.
+library(readxl)
+library(readr)
+library(lubridate)
+library(dplyr)
+library(geojsonio)
+library(writexl)
+library(openxlsx)
+
 
 abitanti <- read.xlsx("data/abitanti_istat.xlsx")
 
