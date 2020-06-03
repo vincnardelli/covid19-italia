@@ -57,7 +57,7 @@ for(i in 1:length(lista)){
   model$data <- as_date(model$data)
   
   final <- right_join(ti_df, model) %>% 
-    filter(data > "2020-02-24" & data < "2020-06-01")
+    filter(data > "2020-02-24" & data < "2020-06-30")
   
   
   ti_lines <- ti %>% 
