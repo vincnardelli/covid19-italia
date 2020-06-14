@@ -314,7 +314,7 @@ hist_df.to_csv('output/10_R0_europe_hist_'+date_t+month_t+'.csv')
 yesterday = date.today() - timedelta(days=1)
 year_y,month_y,date_y=str(yesterday).split('-')
 
-r0_countries_imp = pd.read_excel('output/10_R0_europe_curve_'+date_y+month_y+'.xlsx')
+r0_countries_imp = pd.read_excel('input/10_R0_europe_curve_'+date_y+month_y+'.xlsx')
 r0_imp_noindex = r0_countries_imp.iloc[:, 1:]
 
 row_today=pd.DataFrame(np.reshape(r0_today,(1, len(countries_list))),
@@ -325,6 +325,7 @@ row_today.index = [len(r0_imp_noindex)]
 
 export_today = pd.concat([r0_imp_noindex,row_today])
 export_today.to_excel('output/10_R0_europe_curve_'+date_t+month_t+'.xlsx',index=True)
+export_today.to_excel('input/10_R0_europe_curve_'+date_t+month_t+'.xlsx',index=True)
 
 r0_to_join = pd.Series(name_R0_df['R0'])
 r0_to_join.index = name_R0_df['Country']
