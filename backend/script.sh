@@ -15,10 +15,16 @@ cd ../regioni
 rm export/*
 python3 R0_map.py
 
+# internazionale
+cd ../internazionale
+rm export/*
+python3 Europa.py
+
 # R
 cd ../R
 rm export/*
 cp ../regioni/export/* export/
+cp ../internazionale/export/* export/
 Rscript main.R
-zip -r export/export.zip export
-aws s3 cp export/export.zip s3://covstatit/
+zip -r export/export2.zip export
+aws s3 cp export/export2.zip s3://covstatit/

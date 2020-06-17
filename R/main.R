@@ -2,7 +2,7 @@
 source("R/libraries.R")
 source("R/config.R")
 
-clean()
+#clean()
 #1
 step(1)
 
