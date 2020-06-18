@@ -316,15 +316,14 @@ yesterday = date.today() - timedelta(days=1)
 year_y,month_y,date_y=str(yesterday).split('-')
 
 r0_countries_imp = pd.read_excel('input/input.xlsx')
-r0_imp_noindex = r0_countries_imp.iloc[:, 1:]
 
 row_today=pd.DataFrame(np.reshape(r0_today,(1, len(countries_list))),
-                       index= [str(date.today())],
+                       index= [str(yesterday)],
                        columns=countries_list).reset_index()
-row_today.rename(columns={'index':'Date'}, inplace=True)
-row_today.index = [len(r0_imp_noindex)]
+row_today.rename(columns={'index':'Data'}, inplace=True)
+row_today.index = [len(r0_countries_imp)]
 
-export_today = pd.concat([r0_imp_noindex,row_today])
+export_today = pd.concat([r0_countries_imp,row_today])
 export_today.to_excel('output/10_R0_europe_curve_'+date_t+month_t+'.xlsx',index=True)
 export_today.to_excel('input/input.xlsx',index=True)
 
